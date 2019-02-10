@@ -1,43 +1,26 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-
-import { getDemoRequest } from '../../redux/actions/demoActions';
-
-import User from '../../components/User';
+import { reduxForm, Field } from 'redux-form';
 
 class Home extends Component {
-	componentWillMount() {
-		this.props.getDemoRequest('hey');
-	}
+	handleSubmit = formValues => {
+		console.log(formValues);
+	};
 	render() {
-		const { users } = this.props;
-
-		let items = [];
-		if (typeof users !== 'undefined') {
-			items = users.map((value, index) => {
-				return <User key={index} {...value} />;
-			});
-		}
-		return <div>{items}</div>;
+		return(
+			<form onSubmit={this.props.handleSubmit(this.handleSubmit)}>
+				<div>
+					<label>Email</label>
+					<Field name="email" type="email" component="input"/>
+				</div>
+				<div>
+					<label>Password</label>
+					<Field name="password" type="password" component="input"/>
+				</div>
+				<button type="submit">Login</button>
+			</form>
+	);
 	}
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-	return {
-		getDemoRequest: payload => {
-			dispatch(getDemoRequest(payload));
-		}
-	};
-};
-const mapStateToProps = state => {
-	return {
-		users: state.demoReducer[0]
-	};
-};
 
-Home.propTypes = {
-	dispatch: PropTypes.func
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default reduxForm({ form: 'loginForm'})(Home);
